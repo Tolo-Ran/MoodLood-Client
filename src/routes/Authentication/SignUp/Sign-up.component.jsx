@@ -5,11 +5,23 @@ import {auth, googleAuthProvider} from "../../../utils/firebase/firebase";
 import "react-toastify/dist/ReactToastify.css"
 import {GoogleOutlined, MailOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {createOrUpdateUser, protectRoute} from "../../../utils/auth/auth.utils";
+import {dispatchUserInfo} from "../../../utils/redux/userDispatch.utils";
+import {useDispatch} from "react-redux";
 
 
 const RegisterForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const {user} = useSelector(state => ({...state}));
+    const dispatch = useDispatch();
+
+
+    useEffect(() => {
+        protectRoute(user, navigate);
+    }, [user]);
 
     const handleSubmitForm = (values) => {
         const {email} = values;
@@ -41,7 +53,12 @@ const RegisterForm = () => {
                 const token = credential.accessToken;
                 // The signed-in user info.
                 const user = result.user;
-                navigate("/sign-up/complete");
+                createOrUpdateUser(user.accessToken, user.displayName)
+                    .then(res => {
+                        dispatchUserInfo(res, dispatch);
+                    })
+                    .catch(e => console.log("error by reaching auth" + e));
+                navigate("/sign-up/complete-google");
             }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;

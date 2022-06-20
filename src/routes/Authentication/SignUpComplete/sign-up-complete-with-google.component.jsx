@@ -2,40 +2,30 @@ import {Button, Form, Input} from "antd";
 import {auth} from "../../../utils/firebase/firebase";
 import {toast, ToastContainer} from "react-toastify";
 import {
-    isSignInWithEmailLink,
     signOut,
     updatePassword,
-    signInWithEmailLink,
-    updateProfile
 } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
-import {useState, useEffect} from "react";
+import {useState, useEffect, lazy} from "react";
 import Loading from "../../../components/loading/Loading.component"
-import {
-    useDispatch,
-    useSelector
-} from "react-redux";
-import {
-    createOrUpdateUser,
-    protectRoute,
-    passwordValidator
-} from "../../../utils/auth/auth.utils";
+import {useDispatch, useSelector} from "react-redux";
+import {passwordValidator, protectRoute} from "../../../utils/auth/auth.utils";
 
-
-const CompleteRegisterForm = () => {
+const CompleteRegisterSetUpOnlyPasswordForm = () => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {user} = useSelector(state => ({...state}));
+    let [currentEmail, setCurrentEmail] = useState("");
 
     useEffect(() => {
-        protectRoute(user, navigate);
-    }, [user]);
-
+        const email = auth.currentUser.email;
+        setCurrentEmail(email);
+    })
     const handleSubmitForm = (values) => {
         setLoading(true);
-        const {password, email, lastName, firstName} = values;
+        const {password} = values;
 
         if (!passwordValidator(password)) {
             toast.warn("Password must be at least eight (8) characters, with one (1) lower- and one (1) uppercase letter and one (1) special character");
@@ -43,56 +33,28 @@ const CompleteRegisterForm = () => {
         }
 
         /*conplete sign up with email link*/
-        if (isSignInWithEmailLink(auth, window.location.href)) {
-            let email = window.localStorage.getItem('emailForSignIn');
-            if (!email) {
-                email = window.prompt('Please provide your email for confirmation');
-            }
+        console.log("user selectopr")
+        console.log(user);
 
-            signInWithEmailLink(auth, email, window.location.href)
-                .then(async (result) => {
-                    window.localStorage.removeItem('emailForSignIn');
-
-                    updatePassword(result.user, password)
-                        .then((
-
-                        ) => {
-                            console.log("password updated successfully");
-                            updateProfile(result.user, {
-                                displayName: `${firstName} ${lastName}`,
-                            })
-                                .then(() => {
-                                    console.log("Display name updated successfully");
-                                    console.log("New user");
-                                    console.log(result.user);
-                                    createOrUpdateUser(result.user.accessToken, result.user.displayName);
-                                })
-                                .catch((error) => {
-                                    console.log("error occurred while updateProfile");
-                                    console.log(error);
-                                });
-                        }).catch((error) => {
-                        console.log("error occurred while updating password");
-                        console.log(error);
-                    });
-
-                    signOut(auth).then(r => {
-                        dispatch(
-                            {
-                                type: 'LOGGED_OUT',
-                                payload: null
-                            }
-                        )
-                        navigate("/sign-in");
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
+        updatePassword(auth.currentUser, password)
+            .then(() => {
+                console.log("Curent user:")
+                console.log(auth.currentUser);
+                console.log("password updated successfully");
+                signOut(auth).then(r => {
+                    dispatch(
+                        {
+                            type: 'LOGGED_OUT',
+                            payload: null
+                        }
+                    )
+                    navigate("/sign-in");
                 });
-        }
+            }).catch((error) => {
+            console.log("error occurred while updating password");
+            console.log(error);
+        });
     };
-
-
 
     return (
         <>
@@ -105,29 +67,12 @@ const CompleteRegisterForm = () => {
                     <Form.Item
                         label="Email"
                         name="email"
-                        initialValue={localStorage.getItem('emailForSignIn')}
+                        initialValue={currentEmail}
                         type="email"
+                        disabled={true}
                     >
                         <Input
                             disabled={true}/>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="First Name"
-                        name="firstName"
-                        type="name"
-                        required={true}
-                    >
-                        <Input/>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Last Name"
-                        name="lastName"
-                        type="lastName"
-                        required={true}
-                    >
-                        <Input/>
                     </Form.Item>
 
                     <Form.Item
@@ -168,7 +113,7 @@ const CompleteRegisterForm = () => {
                             shape={"round"}
                             type="primary"
                             htmlType="submit">
-                            Sign up
+                            Confirm
                         </Button>
 
                     </Form.Item>
@@ -177,7 +122,7 @@ const CompleteRegisterForm = () => {
     );
 };
 
-export const SignUpComplete = () => {
+export const SignUpCompleteGoogle = () => {
 
     return (
         <div id="sign-up-confirm-container" className="container mt-lg-6 p-5">
@@ -186,7 +131,7 @@ export const SignUpComplete = () => {
                     <h2>Thank you for signing up!</h2>
                     <p>Set up a new password to complete your registration.</p>
                     <div className="mt-5">
-                        <CompleteRegisterForm />
+                        <CompleteRegisterSetUpOnlyPasswordForm />
                         <ToastContainer />
                     </div>
 

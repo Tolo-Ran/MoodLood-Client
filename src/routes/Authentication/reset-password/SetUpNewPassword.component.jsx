@@ -5,11 +5,18 @@ import {auth, googleAuthProvider} from "../../../utils/firebase/firebase";
 import "react-toastify/dist/ReactToastify.css"
 import {CheckOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
-
+import {useSelector} from "react-redux";
+import {useEffect} from "react";
+import {protectRoute} from "../../../utils/auth/auth.utils";
 
 const NewPasswordForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const {user} = useSelector(state => ({...state}));
+
+    useEffect(() => {
+        protectRoute(user, navigate);
+    }, [user]);
 
     const passwordValidator = (password) => {
         /*At least 8 chars
@@ -78,7 +85,7 @@ const NewPasswordForm = () => {
                 <Button
                     className={"me-3"}
                     shape={"round"}
-                    icon={<CheckOutlined />}
+                    icon={<CheckOutlined/>}
                     type="primary"
                     htmlType="submit">
                     Reset Password

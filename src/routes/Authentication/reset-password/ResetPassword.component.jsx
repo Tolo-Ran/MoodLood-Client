@@ -7,6 +7,7 @@ import {GoogleOutlined, MailOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
+import {protectRoute} from "../../../utils/auth/auth.utils";
 
 
 
@@ -16,7 +17,7 @@ const ResetPasswordForm = () => {
     const {user} = useSelector((state) => ({...state}));
 
     useEffect(() => {
-        user !== null && navigate("/");
+        protectRoute(user, navigate);
     }, [user]);
 
     const handleSubmitForm = (values) => {
@@ -31,17 +32,16 @@ const ResetPasswordForm = () => {
             handleCodeInApp: true
         };
 
-        sendPasswordResetEmail( auth,
+        sendPasswordResetEmail(auth,
             email, actionCodeSettings)
-            .then(function() {
+            .then(function () {
                 toast.success("Please check your email. We sent you a reset password link.")
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 toast.error(error);
             });
 
-    }
-
+    };
 
     return (
         <Form
