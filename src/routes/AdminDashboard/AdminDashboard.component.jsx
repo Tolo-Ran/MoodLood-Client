@@ -1,18 +1,20 @@
-import {Breadcrumb} from "antd";
+import BasicBreadcrumb from "../../components/Breadcrumb/Breadcrumb.component";
+import Loading from "../../components/Loading/Loading.component";
+import {useState, useEffect} from "react";
+import {useSelector} from "react-redux";
+import {getProductsList} from "../../utils/product/product.utils";
+import ProductCard from "../../components/ProductCard/ProductCard.component";
 
 export const AdminDashboard = () => {
+        const [isLoading, setIsLoading] = useState(true);
+        const {user} = useSelector(state => ({...state}));
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+    }, []);
     return (
         <>
-            <Breadcrumb
-                style={{
-                    margin: '16px 0',
-                }}
-            >
-                <Breadcrumb.Item>Admin</Breadcrumb.Item>
-                <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-            </Breadcrumb>
-          <h1>Hello admin</h1>
+            <BasicBreadcrumb path={["Admin", "Dashboard"]}/>
         </>
     );
-}
+    }
 ;

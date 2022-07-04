@@ -5,7 +5,7 @@ import {signInWithEmailAndPassword, updateProfile} from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate} from "react-router-dom";
 import {useState, useEffect} from "react";
-import Loading from "../../components/loading/Loading.component"
+import Loading from "../Loading/Loading.component"
 import {GoogleOutlined, MailOutlined} from "@ant-design/icons";
 import {signInWithPopup, GoogleAuthProvider} from "firebase/auth";
 import {useSelector} from "react-redux";

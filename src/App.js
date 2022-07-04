@@ -1,11 +1,9 @@
 import {useEffect} from "react";
 import 'antd/dist/antd.min.css';
 import './App.css';
-import Navigation from "./routes/BaseLayout/BaseLayout.component";
 import {
     BrowserRouter,
     Routes,
-    Navigate,
     Route
 } from "react-router-dom";
 import {Home} from "./routes/Home/Home.component";
@@ -27,7 +25,8 @@ import {SignInAsAdmin} from "./routes/Authentication/SignInAdmin/Sign-in-admin.c
 import {AdminDashboard} from "./routes/AdminDashboard/AdminDashboard.component";
 import AdminCategories from "./routes/AdminCategories/AdminCategories.component";
 import BaseLayout from "./routes/BaseLayout/BaseLayout.component";
-
+import AdminSubcategories from "./routes/AdminSubcategories/AdminSubcategories.component";
+import AdminProducts from "./routes/AdminProducts/AdminProducts.component";
 
 function App() {
     const dispatch = useDispatch();
@@ -74,6 +73,17 @@ function App() {
                         <Route path={"categories"} element={
                             <ProtectedRoute user={user}>
                                 <AdminCategories/>
+                            </ProtectedRoute>}/>
+                        } />
+                        <Route path={"subcategories"} element={
+                            <ProtectedRoute user={user}>
+                                <AdminSubcategories/>
+                            </ProtectedRoute>}/>
+                        } />
+
+                        <Route path={"products"} element={
+                            <ProtectedRoute user={user}>
+                                <AdminProducts/>
                             </ProtectedRoute>}/>
                         } />
                     </Route>

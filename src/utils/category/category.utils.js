@@ -1,4 +1,5 @@
 import axios from "axios";
+import {toast} from "react-toastify";
 
 export let getCategoriesList = async () => {
     return await axios.get(`${process.env.REACT_APP_API}/category`);
@@ -16,7 +17,7 @@ export let createCategory = async (authtoken, name) => {
             authtoken
         }
     })
-       .catch(e => console.log(e));
+        .catch(e => toast.error(e.message));
 };
 
 export let updateCategory = async (slug, authtoken, name) => {
@@ -36,4 +37,31 @@ export let removeCategory = async (slug, authtoken) => {
         }
     })
        .catch(e => console.log(e));
+}
+
+export const fetchAndStoreCategoriesInRedux = (dispatch) => {
+    getCategoriesList().then(res => {
+        const {data} = res;
+        dispatch({
+            type: "GET_CATEGORY_LIST",
+            payload: {
+                list: data
+            }
+        })
+    });
+}
+export const getCategoriesNames = (categories) => {
+    const names = [];
+    for (let i = 0; i < categories.length; i++) {
+        names.push(categories[i].name);
+    }
+    return names;
+};
+
+export const findCategoryId = (categoryName, categories) => {
+    if (categories) {
+        const matcher = categories.find(category => category.name === categoryName);
+        const id = matcher._id;
+        return id;
+    }
 }

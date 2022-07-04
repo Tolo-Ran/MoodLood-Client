@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import {useState, useEffect, lazy} from "react";
-import Loading from "../../../components/loading/Loading.component"
+import Loading from "../../../components/Loading/Loading.component"
 import {useDispatch, useSelector} from "react-redux";
 import {passwordValidator, protectRoute} from "../../../utils/auth/auth.utils";
 

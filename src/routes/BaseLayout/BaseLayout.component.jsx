@@ -1,9 +1,5 @@
-import {
-    LaptopOutlined,
-    NotificationOutlined,
-    UserOutlined
-} from '@ant-design/icons';
-import {Breadcrumb, Layout, Menu} from 'antd';
+
+import { Layout } from 'antd';
 import React from 'react';
 import Navigation from "../../components/Navigation/Navigation.component";
 import {Outlet} from "react-router-dom";

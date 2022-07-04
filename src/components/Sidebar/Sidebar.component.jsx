@@ -21,7 +21,7 @@ const Sidebar = ( ) => {
         <Menu
             mode="inline"
             defaultSelectedKeys={"Dashboard"}
-            /*defaultOpenKeys={}*/
+            defaultOpenKeys={"Dashboard"}
             style={{
                 height: '100%',
                 borderRight: 0,
@@ -34,9 +34,22 @@ const Sidebar = ( ) => {
                 <NavLink to="/admin/dashboard"/>
             </Menu.Item>
             <Menu.Item
+                hidden={!(user && user.accessToken)}
                 key="Categories">
                 <span>Categories</span>
                 <NavLink to="/admin/categories"/>
+            </Menu.Item>
+            <Menu.Item
+                hidden={!(user && user.accessToken)}
+                key="Subcategories">
+                <span>Subcategories</span>
+                <NavLink to="/admin/subcategories"/>
+            </Menu.Item>
+            <Menu.Item
+                hidden={!(user && user.accessToken)}
+                key="Products">
+                <span>Products</span>
+                <NavLink to="/admin/products"/>
             </Menu.Item>
         </Menu>
     </>;
